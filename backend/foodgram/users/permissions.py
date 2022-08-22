@@ -20,9 +20,7 @@ class IsAdmin(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         user = request.user
-        if user.is_admin or request.user.is_superuser:
-            return True
-        return False
+        return user.is_admin or request.user.is_superuser
 
 
 class ReadOnly(permissions.BasePermission):

@@ -17,7 +17,6 @@ from api.serializers import (
 from recipes.models import (
     Favorite, Follow, Ingredient, Recipe, ShoppingCart, Tag,
 )
-
 from .filters import IngredientFilter, RecipeFilter
 from .mixins import (
     AllMethodsMixin, CreateDestroyMixin,
@@ -47,7 +46,6 @@ class IngredientsViewSet(ListRetreiveMixin):
 
 
 class RecipeViewSet(AllMethodsMixin):
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
@@ -159,7 +157,8 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(
-            f'Уже подписаны на {author}', status=status.HTTP_400_BAD_REQUEST
+            f'Уже подписаны на {author}',
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     def delete(self, request, pk):
@@ -167,11 +166,13 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
         author = get_object_or_404(User, pk=pk)
         if not Follow.objects.filter(user=user, author=author):
             return Response(
-                f'Не подписаны на {author}', status=status.HTTP_400_BAD_REQUEST
+                f'Не подписаны на {author}',
+                status=status.HTTP_400_BAD_REQUEST
             )
         Follow.objects.filter(user=user, author=author).delete()
         return Response(
-            f'Успешно отписались от {author.username}', status=status.HTTP_204_NO_CONTENT
+            f'Успешно отписались от {author.username}',
+            status=status.HTTP_204_NO_CONTENT
         )
 
 
@@ -195,11 +196,6 @@ class FavoriteViewSet(CreateDestroyMixin):
     def delete(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        if not Favorite.objects.filter(user=user, recipe=recipe):
-            return Response(
-                f'Рецепт {recipe.name} не добавлен в избранное',
-                status=status.HTTP_400_BAD_REQUEST
-            )
         Favorite.objects.filter(user=user, recipe=recipe).delete()
         return Response(
             f'Рецепт {recipe.name} удалён из избранного',

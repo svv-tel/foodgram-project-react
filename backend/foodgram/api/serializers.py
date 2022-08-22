@@ -64,6 +64,15 @@ class RecipeSerializer(serializers.ModelSerializer):
     is_in_shopping_cart = serializers.SerializerMethodField()
     image = Base64ImageField(max_length=None, use_url=False)
 
+    class Meta:
+        model = Recipe
+        fields = (
+            'id', 'tags', 'author',
+            'ingredients', 'is_favorited',
+            'is_in_shopping_cart', 'name',
+            'image', 'text', 'cooking_time',
+        )
+
     def get_is_favorited(self, obj):
         user = self.context['request'].user
         if not user.is_anonymous:
@@ -75,15 +84,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         if not user.is_anonymous:
             return ShoppingCart.objects.filter(user=user, recipe=obj).exists()
         return False
-
-    class Meta:
-        model = Recipe
-        fields = (
-            'id', 'tags', 'author',
-            'ingredients', 'is_favorited',
-            'is_in_shopping_cart', 'name',
-            'image', 'text', 'cooking_time',
-        )
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
@@ -124,7 +124,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             author=self.context['request'].user,
             **validated_data
         )
-        self.generate_recipe_ingr(ingredients, recipe)
         recipe.tags.set(tags)
         return recipe
 

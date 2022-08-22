@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from recipes.models import (Favorite, Ingredient, IngredientRecipeAmount,
-                            Recipe, ShoppingCart, Tag)
+from recipes.models import (
+    Favorite, Ingredient, IngredientRecipeAmount, Recipe, ShoppingCart, Tag
+)
 
 
 class TagAdmin(admin.ModelAdmin):
@@ -52,8 +53,9 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 class ShoppingCartAdmin(admin.ModelAdmin):
     def __init__(self, model, admin_site):
-        self.list_display = ([field.name for field in model._meta.fields
-                              if field.name != "id"])
+        self.list_display = (
+            [field.name for field in model._meta.fields if field.name != 'id']
+        )
         super(ShoppingCartAdmin, self).__init__(model, admin_site)
 
     search_fields = ('user',)

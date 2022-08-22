@@ -24,9 +24,9 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'users.apps.UsersConfig',
-    'api.apps.ApiConfig',
     'django_filters',
+    'api.apps.ApiConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -41,7 +41,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'foodgram.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
