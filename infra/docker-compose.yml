@@ -7,12 +7,25 @@ services:
       - db_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+
+  backend:
+    image: 0302198703021987/backend:latest
+    restart: always
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
   frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
+
   nginx:
     image: nginx:1.19.3
     ports:
@@ -25,17 +38,6 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - backend
-
-  backend:
-    image: 0302198703021987/backend:latest
-    restart: always
-    volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
-    depends_on:
-      - db
-    env_file:
-      - ./.env
 
 volumes:
   db_data:
