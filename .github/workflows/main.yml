@@ -56,7 +56,7 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER_HOST }}
-        key: ${{ secrets.SSH_KEY_HOST }}
+        key: ${{ secrets.SSH_KEY }}
         stack_file_name: docker-compose.yml
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
@@ -71,4 +71,3 @@ jobs:
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           sudo docker-compose up -d
-          
