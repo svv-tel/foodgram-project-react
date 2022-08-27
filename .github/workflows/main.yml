@@ -57,6 +57,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER_HOST }}
         key: ${{ secrets.SSH_KEY }}
+        passphrase: ${{ secrets.PASSPHRASE }}
         stack_file_name: docker-compose.yml
         script: |
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram
