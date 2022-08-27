@@ -64,7 +64,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
             user = self.perform_create(validated_data)
         except IntegrityError:
             self.fail('cannot_create_user')
-
         return user
 
     def perform_create(self, validated_data):

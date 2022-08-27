@@ -57,14 +57,14 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор'
-        )
+    )
     image = models.ImageField(
         upload_to='media',
         null=True,
         blank=True,
         verbose_name='Изображение',
         max_length=2048
-        )
+    )
 
     tags = models.ManyToManyField(
         Tag,
@@ -148,7 +148,7 @@ class Favorite(models.Model):
             UniqueConstraint(
                 fields=['user', 'recipe'],
                 name='unique_favourite'
-                )
+            )
         ]
 
 
