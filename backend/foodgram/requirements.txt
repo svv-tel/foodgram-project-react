@@ -1,0 +1,1 @@
+Requirement already satisfied: pip in /Users/vls/Dev/foodgram-project-react/venv/lib/python3.8/site-packages (22.2.2)
