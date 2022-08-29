@@ -9,6 +9,7 @@ services:
       - ./.env
 
   frontend:
+    platform: linux/amd64
     image: 0302198703021987/frontend:v.1
     volumes:
       - frontend_data:/app/build/
@@ -16,6 +17,7 @@ services:
       - db
 
   backend:
+    platform: linux/amd64
     image: 0302198703021987/backend:latest
     restart: always
     volumes:
