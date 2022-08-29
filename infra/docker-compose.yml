@@ -13,7 +13,7 @@ services:
       context: ../frontend
       dockerfile: Dockerfile
     volumes:
-      - ../frontend/:/app/result_build/
+      - ../frontend/result_build/:/app/build/
 
   backend:
     image: 0302198703021987/backend:latest
