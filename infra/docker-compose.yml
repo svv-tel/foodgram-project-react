@@ -9,11 +9,11 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: 0302198703021987/frontend:latest
     volumes:
-      - ../frontend/result_build/:/app/build/
+      - frontend_data:/app/build/
+    depends_on:
+      - db
 
   backend:
     image: 0302198703021987/backend:latest
@@ -36,6 +36,7 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/static/
       - media_value:/var/html/media/
+      - frontend_data:/usr/share/nginx/html/
     depends_on:
       - backend
       - frontend
@@ -44,3 +45,4 @@ volumes:
   db_data:
   static_value:
   media_value:
+  frontend_data:
