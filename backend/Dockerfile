@@ -1,5 +1,5 @@
 FROM python:3.7
-WORKDIR /app/foodgram
+WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip3 install -r requirements.txt --no-cache-dir
