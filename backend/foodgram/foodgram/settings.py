@@ -4,7 +4,7 @@ from datetime import timedelta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = '%uye$x44lc*7x93pk&jjn#)1$wfo^zqr!f_utl(=v7+tl3m7a3'
 
 DEBUG = False
 
