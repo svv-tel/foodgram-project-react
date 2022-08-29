@@ -7,12 +7,13 @@ services:
       - db_data:/var/lib/postgresql/data/
     env_file:
       - ./.env
+
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: 0302198703021987/frontend:latest
     volumes:
-      - ../frontend/:/app/result_build/
+      - frontend_data:/app/build/
+    depends_on:
+      - db
 
   backend:
     image: 0302198703021987/backend:latest
@@ -24,13 +25,6 @@ services:
       - db
     env_file:
       - ./.env
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
 
   nginx:
     image: nginx:1.19.3
@@ -44,8 +38,10 @@ services:
       - media_value:/var/html/media/
     depends_on:
       - backend
+      - frontend
 
 volumes:
   db_data:
   static_value:
   media_value:
+  frontend_data:
