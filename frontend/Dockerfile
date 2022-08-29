@@ -1,6 +1,5 @@
 # build env
-FROM --platform=linux/amd64
-FROM node:13.12.0-alpine as build
+FROM node:13.12.0-alpine --platform=linux/amd64 as build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
