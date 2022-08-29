@@ -9,7 +9,7 @@ services:
       - ./.env
 
   frontend:
-    image: 0302198703021987/frontend:latest
+    image: 0302198703021987/frontend:v.1
     volumes:
       - frontend_data:/app/build/
     depends_on:
