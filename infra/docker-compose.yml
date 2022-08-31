@@ -9,11 +9,11 @@ services:
       - ./.env
 
   frontend:
-    image: mikebknd/front:latest
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     volumes:
-      - frontend_data:/app/build/
-    depends_on:
-      - db
+      - ../frontend/:/app/result_build/
 
   backend:
     image: 0302198703021987/backend:latest

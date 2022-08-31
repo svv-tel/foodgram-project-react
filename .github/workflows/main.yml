@@ -52,7 +52,7 @@ jobs:
         with:
           push: true
           context: ./frontend/
-          tags: mikebknd/front:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/frontend:latest
 
   deploy:
     runs-on: ubuntu-latest
