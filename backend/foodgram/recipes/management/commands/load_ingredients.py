@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Fill database with ingredients'
 
     def handle(self, *args, **kwargs):
-        file = open('recipes/management/commands/data/ingredients.json',
+        file = open('{data_path}/data/ingredients.json',
                     encoding='utf-8')
         data = json.loads(file.read())
         ingredient_objs = []
