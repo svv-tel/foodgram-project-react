@@ -1,6 +1,6 @@
 from django_filters.rest_framework import BaseInFilter, CharFilter, FilterSet
 
-from recipes.models import Ingredient, Recipe
+from recipes.models import Ingredient, Recipe, Tag
 
 
 class CharFilterInFilter(BaseInFilter, CharFilter):
@@ -10,6 +10,7 @@ class CharFilterInFilter(BaseInFilter, CharFilter):
 class RecipeFilter(FilterSet):
     tags = CharFilterInFilter(
         field_name='tags__slug',
+        queryset=Tag.objects.all(),
         lookup_expr='in'
     )
     name = CharFilter(
