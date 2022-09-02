@@ -34,6 +34,7 @@ class TagsViewSet(ListRetreiveMixin):
     search_fields = ('name',)
     lookup_field = 'id'
     pagination_class = None
+    permission_classes = (AllowAny,)
 
 
 class IngredientsViewSet(ListRetreiveMixin):
