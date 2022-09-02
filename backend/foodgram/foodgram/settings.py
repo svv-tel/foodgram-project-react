@@ -133,7 +133,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/app/static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = f'{BASE_DIR}/app/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
