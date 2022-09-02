@@ -46,7 +46,6 @@ class IngredientsViewSet(ListRetreiveMixin):
 
 
 class RecipeViewSet(AllMethodsMixin):
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
@@ -55,6 +54,7 @@ class RecipeViewSet(AllMethodsMixin):
     ]
 
     def get_queryset(self):
+        queryset = Recipe.objects.all()
         is_favorited = self.request.query_params.get('is_favorited')
         is_in_shopping_cart = (
             self.request.query_params.get('is_in_shopping_cart')
