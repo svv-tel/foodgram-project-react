@@ -21,12 +21,14 @@ class CreatTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id')
+        lookup_field = 'slug'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ('id', 'name', 'measurement_units')
+        lookup_field = 'id'
 
 
 class RecipeIngredient(serializers.ModelSerializer):
@@ -34,6 +36,7 @@ class RecipeIngredient(serializers.ModelSerializer):
         model = IngredientRecipeAmount
         fields = ('id', 'amount',)
         read_only_fields = ('measurement_units', 'name',)
+        lookup_field = 'id'
 
 
 class RecipeIngredientSerializerTest(serializers.HyperlinkedModelSerializer):
@@ -95,7 +98,15 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('__all__')
+        fields = (
+            'ingredients',
+            'tags',
+            'image',
+            'name',
+            'text',
+            'cooking_time',
+            'author'
+        )
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
         ingredient_recipe_objs = []
