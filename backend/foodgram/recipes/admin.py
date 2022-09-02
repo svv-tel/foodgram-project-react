@@ -52,12 +52,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 
 class ShoppingCartAdmin(admin.ModelAdmin):
-    def __init__(self, model, admin_site):
-        self.list_display = (
-            [field.name for field in model._meta.fields if field.name != 'id']
-        )
-        super(ShoppingCartAdmin, self).__init__(model, admin_site)
-
+    list_display = ('id', 'user', 'recipe')
     search_fields = ('user',)
     list_filter = ('user',)
     empty_value_display = '-пусто-'
