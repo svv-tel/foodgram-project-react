@@ -108,18 +108,17 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'author'
         )
 
-    def generate_recipe_ingr(self, ingredients_data, recipe):
-        ingredient_recipe_objs = []
-        for ingredient in ingredients_data:
-            ingredient_recipe_objs.append(
-                IngredientRecipeAmount(
-                    recipe=recipe,
-                    ingredient=Ingredient.objects.get(pk=ingredient['id']),
-                    amount=ingredient['amount']
-                )
-            )
-        return IngredientRecipeAmount.objects.bulk_create(
-            ingredient_recipe_objs
+
+    def generate_recipe_ingr(self, recipe, ingredients_data):
+        IngredientRecipeAmount.objects.bulk_create(
+            [IngredientRecipeAmount(
+                ingredient=get_object_or_404(
+                    Ingredient,
+                    id=ingredient_item.get('id')
+                ),
+                recipe=recipe,
+                amount=ingredient_item.get('amount')
+            ) for ingredient_item in ingredients_data]
         )
 
     def create(self, validated_data):
