@@ -140,9 +140,9 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
             Follow.objects.create(user=user, author=author)
             queryset = author
             serializer = FollowUserCreateSerializer(
-                                              queryset,
-                                              context={'request': request,
-                                                       'pk': pk})
+                queryset,
+                context={'request': request, 'pk': pk}
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(f'Вы уже подписаны на {author}',
                         status=status.HTTP_400_BAD_REQUEST)
