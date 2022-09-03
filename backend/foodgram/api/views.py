@@ -10,7 +10,7 @@ from rest_framework.settings import api_settings
 from api.permissions import AuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoritRecipeSerializer, FollowUserSerializer,
+    FavoriteRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
