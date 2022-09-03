@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
@@ -107,7 +108,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'cooking_time',
             'author'
         )
-
 
     def generate_recipe_ingr(self, recipe, ingredients_data):
         IngredientRecipeAmount.objects.bulk_create(
