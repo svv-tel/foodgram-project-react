@@ -16,6 +16,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'slug', 'color')
+        lookup_field = 'slug'
 
 
 class CreatTagSerializer(serializers.ModelSerializer):
@@ -87,38 +88,32 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class CreateRecipeSerializer(serializers.ModelSerializer):
-    author = CustomUserSerializer(read_only=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(), many=True,
+    )
     ingredients = RecipeIngredient(
         many=True,
         source='ingredient_amount'
     )
-    tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True,
-    )
+    author = CustomUserSerializer(read_only=True)
     image = Base64ImageField(max_length=None, use_url=False)
 
     class Meta:
         model = Recipe
-        fields = (
-            'ingredients',
-            'tags',
-            'image',
-            'name',
-            'text',
-            'cooking_time',
-            'author'
-        )
+        fields = ('__all__')
 
-    def generate_recipe_ingr(self, recipe, ingredients_data):
-        IngredientRecipeAmount.objects.bulk_create(
-            [IngredientRecipeAmount(
-                ingredient=get_object_or_404(
-                    Ingredient,
-                    id=ingredient_item.get('id')
-                ),
-                recipe=recipe,
-                amount=ingredient_item.get('amount')
-            ) for ingredient_item in ingredients_data]
+    def generate_recipe_ingr(self, ingredients_data, recipe):
+        ingredient_recipe_objs = []
+        for ingredient in ingredients_data:
+            ingredient_recipe_objs.append(
+                IngredientRecipeAmount(
+                    recipe=recipe,
+                    ingredient=Ingredient.objects.get(pk=ingredient['id']),
+                    amount=ingredient['amount']
+                )
+            )
+        return IngredientRecipeAmount.objects.bulk_create(
+            ingredient_recipe_objs
         )
 
     def create(self, validated_data):
@@ -161,7 +156,7 @@ class FavoriteSerializer(serializers.ModelField):
 class FavoritRecipeSerializer(RecipeSerializer):
     class Meta:
         model = Favorite
-        fields = '__all__'
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class FollowUserSerializer(CustomUserSerializer):
