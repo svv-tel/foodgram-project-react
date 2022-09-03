@@ -163,6 +163,7 @@ class FavoritRecipeSerializer(RecipeSerializer):
         model = Favorite
         fields = '__all__'
 
+
 class FollowUserSerializer(CustomUserSerializer):
     recipes = FavoritRecipeSerializer(many=True)
     recipes_count = serializers.IntegerField(
