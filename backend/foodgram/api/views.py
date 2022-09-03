@@ -10,7 +10,7 @@ from rest_framework.settings import api_settings
 from api.permissions import AuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoriteRecipeSerializer, FollowUserSerializer,
+    FavoritRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
@@ -185,7 +185,7 @@ class FavoriteViewSet(CreateDestroyMixin):
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
             queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoriteRecipeSerializer(queryset)
+            serializer = FavoritRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
@@ -196,14 +196,9 @@ class FavoriteViewSet(CreateDestroyMixin):
     def delete(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        if not Favorite.objects.filter(user=user, recipe=recipe):
-            return Response(
-                f'Рецепт {recipe.name} не добавлен в избранное',
-                status=status.HTTP_400_BAD_REQUEST
-            )
         Favorite.objects.filter(user=user, recipe=recipe).delete()
         return Response(
-            f'Рецепт {recipe.name} успешно удалён из избранного',
+            f'Рецепт {recipe.name} удалён из избранного',
             status=status.HTTP_204_NO_CONTENT
         )
 
