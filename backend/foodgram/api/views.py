@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
+from api.permissions import AuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
     FavoritRecipeSerializer, FollowUserSerializer,
@@ -48,7 +49,9 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = (IsAuthenticatedOrReadOnly)
+    permission_classes = [
+        AuthorOrReadOnlyPermission, IsAuthenticatedOrReadOnly
+    ]
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
