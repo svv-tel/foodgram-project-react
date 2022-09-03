@@ -3,9 +3,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
+from api.permissions import AuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
     FavoritRecipeSerializer, FollowUserSerializer,
@@ -21,9 +23,6 @@ from .mixins import (
     ListCreateDestroyMixin, ListRetreiveMixin,
 )
 from .utils import generate_shopping_list
-
-from .permissions import IsAuthorOrAdminOrReadOnly
-
 
 User = get_user_model()
 
@@ -50,10 +49,12 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = (IsAuthorOrAdminOrReadOnly,)
+    permission_classes = [
+        AuthorOrReadOnlyPermission, IsAuthenticatedOrReadOnly
+    ]
 
     def get_queryset(self):
-        queryset = Recipe.objects.all()
+        queryset = Recipe.objects.all().order_by("-id")
         is_favorited = self.request.query_params.get('is_favorited')
         is_in_shopping_cart = (
             self.request.query_params.get('is_in_shopping_cart')
