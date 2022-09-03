@@ -160,9 +160,8 @@ class FavoriteSerializer(serializers.ModelField):
 
 class FavoritRecipeSerializer(RecipeSerializer):
     class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-
+        model = Favorite
+        fields = '__all__'
 
 class FollowUserSerializer(CustomUserSerializer):
     recipes = FavoritRecipeSerializer(many=True)
