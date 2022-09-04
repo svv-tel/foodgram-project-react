@@ -192,6 +192,3 @@ class FollowUserCreateSerializer(FollowUserSerializer):
 
 
 class ShoppingCartRecipeSerializer(FavoritRecipeSerializer):
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image',)
