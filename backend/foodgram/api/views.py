@@ -46,6 +46,7 @@ class IngredientsViewSet(ListRetreiveMixin):
 
 
 class RecipeViewSet(AllMethodsMixin):
+    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
