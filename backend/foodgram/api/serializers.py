@@ -28,7 +28,7 @@ class CreatTagSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_units')
+        fields = ('__all__')
         lookup_field = 'id'
 
 
