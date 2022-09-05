@@ -1,9 +1,16 @@
-from django.contrib.auth import get_user_model
 from django_filters import rest_framework as filters
-from recipes import models
-from recipes.models import Tag
 
-User = get_user_model()
+from rest_framework.exceptions import ValidationError
+
+from recipes.models import Product, Recipe, Tag
+
+
+class IngredientFilter(filters.FilterSet):
+    name = filters.CharFilter(lookup_expr='startswith')
+
+    class Meta:
+        model = Product
+        fields = ['name']
 
 
 class RecipeFilter(filters.FilterSet):
@@ -12,37 +19,31 @@ class RecipeFilter(filters.FilterSet):
         queryset=Tag.objects.all(),
         to_field_name='slug',
     )
-    author = filters.ModelChoiceFilter(queryset=User.objects.all())
-    is_favorited = filters.NumberFilter(method='get_is_favorited')
-    is_in_shopping_cart = filters.NumberFilter(
+    is_favorited = filters.BooleanFilter(
+        method='get_is_favorited'
+    )
+    is_in_shopping_cart = filters.BooleanFilter(
         method='get_is_in_shopping_cart'
     )
 
-    class Meta:
-        model = models.Recipe
-        fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
+    class Meta():
+        model = Recipe
+        fields = ['tags']
 
     def get_is_favorited(self, queryset, name, value):
-        if value:
-            return models.Recipe.objects.filter(
-                favorite_recipe__user=self.request.user
+        if self.request.user.is_anonymous:
+            raise ValidationError(
+                {"Вы должны авторизоваться, чтобы видеть избранные рецепты"}
             )
-        return models.Recipe.objects.all()
+        if value:
+            return queryset.filter(favorite_recipe__user=self.request.user)
+        return queryset.all().exclude(favorite_recipe__user=self.request.user)
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        if value:
-            return models.Recipe.objects.filter(
-                shopping_cart__user=self.request.user
+        if self.request.user.is_anonymous:
+            raise ValidationError(
+                {"Вы должны авторизоваться, чтобы видеть список покупок"}
             )
-        return models.Recipe.objects.all()
-
-
-class IngredientFilter(filters.FilterSet):
-    name = filters.CharFilter(
-        field_name='name',
-        lookup_expr='istartswith'
-    )
-
-    class Meta:
-        model = models.Ingredient
-        fields = ('name',)
+        if value:
+            return queryset.filter(shopping_cart__user=self.request.user)
+        return queryset.all().exclude(shopping_cart__user=self.request.user)
