@@ -23,18 +23,16 @@ class RecipeFilter(filters.FilterSet):
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, queryset, name, value):
-        if value:
-            return models.Recipe.objects.filter(
-                favorite_recipe__user=self.request.user
-            )
-        return models.Recipe.objects.all()
+        user = self.request.user
+        if value == 1:
+            return queryset.filter(favorite_recipe__user=user)
+        return queryset
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        if value:
-            return models.Recipe.objects.filter(
-                shopping_cart__user=self.request.user
-            )
-        return models.Recipe.objects.all()
+        user = self.request.user
+        if value == 1:
+            return queryset.filter(cart_recipe__user=user)
+        return queryset
 
 
 class IngredientFilter(filters.FilterSet):
