@@ -50,6 +50,7 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
+    pagination_class = None
     permission_classes = [
         AuthorOrReadOnlyPermission, IsAuthenticatedOrReadOnly
     ]
