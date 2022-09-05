@@ -126,12 +126,11 @@ class FollowListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         queryset = User.objects.filter(following__in=user_subscriptions)
         page = self.paginate_queryset(queryset)
         serializer = FollowUserSerializer(
-            page, many=True,
+            page,
+            many=True,
             context={'request': request}
         )
-        if page is not None:
-            return self.get_paginated_response(serializer.data)
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
 
 class FollowCreateDestroyViewSet(CreateDestroyMixin):
