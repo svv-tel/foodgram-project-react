@@ -41,5 +41,5 @@ class IngredientFilter(filters.FilterSet):
     )
 
     class Meta:
-        model = models.Ingredient
+        model = Ingredient
         fields = ('name',)
