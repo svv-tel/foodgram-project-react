@@ -84,12 +84,6 @@ class RecipeViewSet(AllMethodsMixin):
     def perform_create(self, serializer):
         serializer.save()
 
-    def get_success_headers(self, data):
-        try:
-            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
-        except (TypeError, KeyError):
-            return {}
-
     def update(self, request, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
