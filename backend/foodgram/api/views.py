@@ -66,7 +66,7 @@ class RecipeViewSet(AllMethodsMixin):
             )
         if is_in_shopping_cart == '1':
             queryset = Recipe.objects.filter(
-                shoppingcart__user=self.request.user
+                shopping_cart__user=self.request.user
             )
         return queryset
 
