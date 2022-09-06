@@ -22,7 +22,7 @@ services:
   frontend:
     image: 0302198703021987/frontend:latest
     volumes:
-      - frontend_data:/app/build/
+      - ../frontend/:/app/build/
     depends_on:
       - db
 
@@ -44,4 +44,3 @@ volumes:
   db_data:
   static_value:
   media_value:
-  frontend_data:
