@@ -10,7 +10,7 @@ from rest_framework.settings import api_settings
 from api.permissions import IsAuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoriteRecipeSerializer, FollowUserSerializer,
+    FavoritRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
@@ -129,7 +129,9 @@ class FollowListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             many=True,
             context={'request': request}
         )
-        return self.get_paginated_response(serializer.data)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
 
 class FollowCreateDestroyViewSet(CreateDestroyMixin):
@@ -184,7 +186,7 @@ class FavoriteViewSet(CreateDestroyMixin):
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
             queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoriteRecipeSerializer(queryset)
+            serializer = FavoritRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(

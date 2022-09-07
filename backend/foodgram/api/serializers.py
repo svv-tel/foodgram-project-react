@@ -153,14 +153,14 @@ class FavoriteSerializer(serializers.ModelField):
         fields = ('__all__')
 
 
-class FavoriteRecipeSerializer(RecipeSerializer):
+class FavoritRecipeSerializer(RecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class FollowUserSerializer(CustomUserSerializer):
-    recipes = FavoriteRecipeSerializer(many=True)
+    recipes = FavoritRecipeSerializer(many=True)
     recipes_count = serializers.IntegerField(
         source='recipes.count',
         read_only=True
@@ -192,7 +192,7 @@ class FollowUserCreateSerializer(FollowUserSerializer):
         )
 
 
-class ShoppingCartRecipeSerializer(FavoriteRecipeSerializer):
+class ShoppingCartRecipeSerializer(FavoritRecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image',)
