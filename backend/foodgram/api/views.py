@@ -5,11 +5,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.settings import api_settings
 
+from api.permissions import IsAuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoritRecipeSerializer, FollowUserSerializer,
+    FavoriteRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
@@ -47,10 +48,9 @@ class IngredientsViewSet(ListRetreiveMixin):
 class RecipeViewSet(AllMethodsMixin):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    filter_backends = (DjangoFilterBackend)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    pagination_class = PageNumberPagination
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrReadOnlyPermission]
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
@@ -84,6 +84,12 @@ class RecipeViewSet(AllMethodsMixin):
 
     def perform_create(self, serializer):
         serializer.save()
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': str(data[api_settings.URL_FIELD_NAME])}
+        except (TypeError, KeyError):
+            return {}
 
     def update(self, request, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -122,7 +128,9 @@ class FollowListViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
             many=True,
             context={'request': request}
         )
-        return self.get_paginated_response(serializer.data)
+        if page is not None:
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
 
 class FollowCreateDestroyViewSet(CreateDestroyMixin):
@@ -177,7 +185,7 @@ class FavoriteViewSet(CreateDestroyMixin):
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
             queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoritRecipeSerializer(queryset)
+            serializer = FavoriteRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
@@ -188,6 +196,11 @@ class FavoriteViewSet(CreateDestroyMixin):
     def delete(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
+        if not Favorite.objects.filter(user=user, recipe=recipe):
+            return Response(
+                f'Рецепт {recipe.name} не добавлен в избранное',
+                status=status.HTTP_400_BAD_REQUEST
+            )
         Favorite.objects.filter(user=user, recipe=recipe).delete()
         return Response(
             f'Рецепт {recipe.name} удалён из избранного',

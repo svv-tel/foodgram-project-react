@@ -99,12 +99,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = (
-            'id', 'author',
-            'name', 'image',
-            'text', 'ingredients',
-            'tags', 'cooking_time',
-        )
+        fields = ('__all__')
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
         ingredient_recipe_objs = []
@@ -121,11 +116,16 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        ingredients_data = validated_data.pop('ingredients')
+        ingredients = self.context['request'].data['ingredients']
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data)
+        validated_data.pop('ingredient_amount')
+        ingredients_validator(ingredients)
+
+        recipe = Recipe.objects.create(
+            author=self.context['request'].user, **validated_data
+        )
+        self.generate_recipe_ingr(ingredients, recipe)
         recipe.tags.set(tags)
-        self.generate_recipe_ingr(recipe, ingredients_data)
         return recipe
 
     def update(self, instance, validated_data):
@@ -150,17 +150,17 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelField):
     class Meta:
         model = Favorite
-        fields = ('id', 'user', 'recipe')
+        fields = ('__all__')
 
 
-class FavoritRecipeSerializer(RecipeSerializer):
+class FavoriteRecipeSerializer(RecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class FollowUserSerializer(CustomUserSerializer):
-    recipes = FavoritRecipeSerializer(many=True)
+    recipes = FavoriteRecipeSerializer(many=True)
     recipes_count = serializers.IntegerField(
         source='recipes.count',
         read_only=True
@@ -192,7 +192,7 @@ class FollowUserCreateSerializer(FollowUserSerializer):
         )
 
 
-class ShoppingCartRecipeSerializer(FavoritRecipeSerializer):
+class ShoppingCartRecipeSerializer(FavoriteRecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image',)

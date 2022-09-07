@@ -118,7 +118,6 @@ class ShoppingCart(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепты',
-        related_name='shopping_cart',
     )
 
     class Meta:
