@@ -11,7 +11,22 @@
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
   
 ## инструкции по запуску:
-раздел дополняется
+После успешного workflow, запустить следующие команды:
+
+`sudo docker-compose exec backend python manage.py makemigrations` и
+создаем миграции.
+
+`sudo docker-compose exec backend python manage.py migrate` и
+запускаем миграции.
+
+`sudo docker-compose exec backend python manage.py createsuperuser` и
+создаем суперпользователя. 
+
+Копируем статику `sudo docker-compose exec backend python manage.py collectstatic --no-input`.
+
+
+Копируем из csv файла ингредиенты `sudo docker-compose exec backend python manage.py load_ingredients`.
   
+
 ## автор:  
 Самошкин Владимир

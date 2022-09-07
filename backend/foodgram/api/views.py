@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
@@ -46,9 +47,10 @@ class IngredientsViewSet(ListRetreiveMixin):
 class RecipeViewSet(AllMethodsMixin):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filter_backends = (DjangoFilterBackend)
     filterset_class = RecipeFilter
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = Recipe.objects.all()

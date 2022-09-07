@@ -103,9 +103,8 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'id', 'author',
             'name', 'image',
             'text', 'ingredients',
-            'tags', 'cooking_time'
+            'tags', 'cooking_time',
         )
-        read_only_fields = ('author',)
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
         ingredient_recipe_objs = []
