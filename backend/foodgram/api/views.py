@@ -46,7 +46,6 @@ class IngredientsViewSet(ListRetreiveMixin):
 
 
 class RecipeViewSet(AllMethodsMixin):
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
@@ -198,11 +197,6 @@ class FavoriteViewSet(CreateDestroyMixin):
     def delete(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
-        if not Favorite.objects.filter(user=user, recipe=recipe):
-            return Response(
-                f'Рецепт {recipe.name} не добавлен в избранное',
-                status=status.HTTP_400_BAD_REQUEST
-            )
         Favorite.objects.filter(user=user, recipe=recipe).delete()
         return Response(
             f'Рецепт {recipe.name} удалён из избранного',
