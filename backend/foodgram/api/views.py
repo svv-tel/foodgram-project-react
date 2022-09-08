@@ -2,12 +2,12 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, mixins, status, viewsets
+from rest_framework import filters, mixins, status, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.pagination import PageNumberPagination
 
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
     FavoritRecipeSerializer, FollowUserSerializer,
@@ -49,8 +49,15 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = (IsAdminOrReadOnly,)
     pagination_class = PageNumberPagination
+
+    def get_permissions(self):
+        if self.action == 'create':
+            return IsAdminOrReadOnly()
+        if self.action in ('partial_update', 'destroy'):
+            return IsAuthorOrReadOnlyPermission()
+
+        return (permissions.AllowAny(),)
 
     def get_queryset(self):
         queryset = Recipe.objects.all().order_by("-id")
