@@ -5,6 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+from rest_framework.pagination import PageNumberPagination
 
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (
@@ -48,7 +49,8 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
