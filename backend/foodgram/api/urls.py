@@ -53,7 +53,7 @@ router.register(
     basename='favorite',
 )
 router.register(
-    'recipes',
+    r'recipes',
     RecipeViewSet,
     basename='recipes'
 )
