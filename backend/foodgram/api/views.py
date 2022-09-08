@@ -3,11 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from api.permissions import IsAuthorOrReadOnlyPermission
+from api.permissions import IsAdminOrReadOnly
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
     FavoritRecipeSerializer, FollowUserSerializer,
@@ -49,9 +48,7 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = [
-        IsAuthenticatedOrReadOnly, IsAuthorOrReadOnlyPermission
-    ]
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
