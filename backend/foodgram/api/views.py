@@ -52,26 +52,24 @@ class RecipeViewSet(AllMethodsMixin):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = PageNumberPagination
 
-    def get_queryset(self, request, list_model, pk=None):
-        user = self.request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        in_list = list_model.objects.filter(user=user, recipe=recipe)
-        if request.method == 'POST':
-            if not in_list:
-                list_objects = list_model.objects.create(user=user,
-                                                         recipe=recipe)
-                if isinstance(list_model, Favorite):
-                    serializer = FavoriteSerializer(list_objects.recipe)
-                else:
-                    serializer = ShoppingCartRecipeSerializer(list_objects.recipe)
-                return Response(data=serializer.data,
-                                status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            if not in_list:
-                data = {'errors': 'Этого рецепта нет в списке.'}
-                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
-            in_list.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_queryset(self):
+        queryset = Recipe.objects.all().order_by("-id")
+        is_in_shopping_cart = self.request.query_params.get(
+            "is_in_shopping_cart"
+        )
+        is_favorited = self.request.query_params.get("is_favorited")
+        cart = ShoppingCart.objects.filter(user=self.request.user.id)
+        favorite = Favorite.objects.filter(user=self.request.user.id)
+
+        if is_in_shopping_cart == "true":
+            queryset = queryset.filter(cart__in=cart)
+        elif is_in_shopping_cart == "false":
+            queryset = queryset.exclude(cart__in=cart)
+        if is_favorited == "true":
+            queryset = queryset.filter(favorite__in=favorite)
+        elif is_favorited == "false":
+            queryset = queryset.exclude(favorite__in=favorite)
+        return queryset.all().order_by("-id")
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(
