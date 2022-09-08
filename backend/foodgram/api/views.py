@@ -52,21 +52,12 @@ class RecipeViewSet(AllMethodsMixin):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = PageNumberPagination
 
-    def get_queryset(self):
+    def get_queryset(self, request, list_model, pk=None):
         queryset = Recipe.objects.all()
-        is_favorited = self.request.query_params.get('is_favorited')
-        is_in_shopping_cart = (
-            self.request.query_params.get('is_in_shopping_cart')
-        )
-        if is_favorited == '1':
-            queryset = Recipe.objects.filter(
-                favorite_recipe__user=self.request.user
-            )
-        if is_in_shopping_cart == '1':
-            queryset = Recipe.objects.filter(
-                shopping_cart__user=self.request.user
-            )
-        return queryset
+        user = self.request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+        in_list = list_model.objects.filter(user=user, recipe=recipe)
+        return in_list
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(
