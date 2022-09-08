@@ -53,11 +53,25 @@ class RecipeViewSet(AllMethodsMixin):
     pagination_class = PageNumberPagination
 
     def get_queryset(self, request, list_model, pk=None):
-        queryset = Recipe.objects.all()
         user = self.request.user
         recipe = get_object_or_404(Recipe, pk=pk)
         in_list = list_model.objects.filter(user=user, recipe=recipe)
-        return in_list
+        if request.method == 'POST':
+            if not in_list:
+                list_objects = list_model.objects.create(user=user,
+                                                         recipe=recipe)
+                if isinstance(list_model, Favorite):
+                    serializer = FavoriteSerializer(list_objects.recipe)
+                else:
+                    serializer = ShoppingCartRecipeSerializer(list_objects.recipe)
+                return Response(data=serializer.data,
+                                status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            if not in_list:
+                data = {'errors': 'Этого рецепта нет в списке.'}
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+            in_list.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(
