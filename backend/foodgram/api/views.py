@@ -3,14 +3,14 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
+from rest_framework.pagination import PageNumberPagination
 
-from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
+from api.permissions import IsAdminOrReadOnly
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoriteRecipeSerializer, FollowUserSerializer,
+    FavoritRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
@@ -49,8 +49,8 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = [IsAdminOrReadOnly,
-                          IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         queryset = Recipe.objects.all().order_by("-id")
@@ -188,7 +188,7 @@ class FavoriteViewSet(CreateDestroyMixin):
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
             queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoriteRecipeSerializer(queryset)
+            serializer = FavoritRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(
