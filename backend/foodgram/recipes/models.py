@@ -63,6 +63,7 @@ class Recipe(models.Model):
         null=True,
         blank=True,
         verbose_name='Изображение',
+        max_length=2048
     )
     tags = models.ManyToManyField(
         Tag,
