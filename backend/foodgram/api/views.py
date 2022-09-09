@@ -10,7 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnlyPermission
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoritRecipeSerializer, FollowUserSerializer,
+    FavoriteRecipeSerializer, FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
@@ -56,27 +56,26 @@ class RecipeViewSet(AllMethodsMixin):
             return IsAdminOrReadOnly()
         if self.action in ('partial_update', 'destroy'):
             return IsAuthorOrReadOnlyPermission()
-
         return (permissions.AllowAny(),)
 
     def get_queryset(self):
-        queryset = Recipe.objects.all().order_by("-id")
+        queryset = Recipe.objects.all().order_by('-id')
         is_in_shopping_cart = self.request.query_params.get(
-            "is_in_shopping_cart"
+            'is_in_shopping_cart'
         )
-        is_favorited = self.request.query_params.get("is_favorited")
+        is_favorited = self.request.query_params.get('is_favorited')
         cart = ShoppingCart.objects.filter(user=self.request.user.id)
         favorite = Favorite.objects.filter(user=self.request.user.id)
 
-        if is_in_shopping_cart == "true":
+        if is_in_shopping_cart == 'true':
             queryset = queryset.filter(cart__in=cart)
-        elif is_in_shopping_cart == "false":
+        elif is_in_shopping_cart == 'false':
             queryset = queryset.exclude(cart__in=cart)
-        if is_favorited == "true":
+        if is_favorited == 'true':
             queryset = queryset.filter(favorite__in=favorite)
-        elif is_favorited == "false":
+        elif is_favorited == 'false':
             queryset = queryset.exclude(favorite__in=favorite)
-        return queryset.all().order_by("-id")
+        return queryset.all().order_by('-id')
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(
@@ -195,7 +194,7 @@ class FavoriteViewSet(CreateDestroyMixin):
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
             queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoritRecipeSerializer(queryset)
+            serializer = FavoriteRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(

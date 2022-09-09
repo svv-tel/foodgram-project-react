@@ -64,7 +64,6 @@ class Recipe(models.Model):
         blank=True,
         verbose_name='Изображение',
     )
-
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
@@ -74,12 +73,12 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)]
     )
-
     ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipeAmount',
         verbose_name='Ингредиент',
     )
+    ordering = ['id']
 
     def __str__(self):
         return self.name

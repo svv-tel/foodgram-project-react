@@ -153,7 +153,7 @@ class FavoriteSerializer(serializers.ModelField):
         fields = ('id', 'user', 'recipe')
 
 
-class FavoritRecipeSerializer(RecipeSerializer):
+class FavoriteRecipeSerializer(RecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
