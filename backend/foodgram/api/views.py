@@ -56,7 +56,8 @@ class RecipeViewSet(AllMethodsMixin):
             return IsAdminOrReadOnly()
         if self.action in ('partial_update', 'destroy'):
             return IsAuthorOrReadOnlyPermission()
-        return (permissions.AllowAny(),)
+        permissions_any = permissions.AllowAny()
+        return permissions_any
 
     def get_queryset(self):
         queryset = Recipe.objects.all().order_by('-id')
