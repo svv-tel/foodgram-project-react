@@ -160,7 +160,7 @@ class FavoriteRecipeSerializer(RecipeSerializer):
 
 
 class FollowUserSerializer(CustomUserSerializer):
-    recipes = FavoritRecipeSerializer(many=True)
+    recipes = FavoriteRecipeSerializer(many=True)
     recipes_count = serializers.IntegerField(
         source='recipes.count',
         read_only=True
@@ -192,7 +192,7 @@ class FollowUserCreateSerializer(FollowUserSerializer):
         )
 
 
-class ShoppingCartRecipeSerializer(FavoritRecipeSerializer):
+class ShoppingCartRecipeSerializer(FavoriteRecipeSerializer):
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image',)
