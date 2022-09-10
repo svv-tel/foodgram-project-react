@@ -158,10 +158,10 @@ class FavoriteSerializer(serializers.ModelField):
 
     class Meta:
         model = Favorite
-        fields = '__all__'
+        fields = ('id', 'user', 'recipe')
 
 
-class FavoriteRecipeSerializer(RecipeSerializer):
+class FavoritRecipeSerializer(RecipeSerializer):
     """Сериализатор рецептов для ответа при создании записи в избранном"""
 
     class Meta:
