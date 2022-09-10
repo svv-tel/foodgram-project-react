@@ -156,7 +156,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelField):
     class Meta:
         model = Favorite
-        fields = ('id', 'user', 'recipe')
+        fields = ('__all__')
 
 
 class FavoritRecipeSerializer(RecipeSerializer):
