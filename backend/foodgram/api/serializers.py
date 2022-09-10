@@ -99,7 +99,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('__all__')
+        fields = (
+            'tags', 'ingredients',
+            'name', 'image',
+            'text', 'cooking_time',
+        )
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
         ingredient_recipe_objs = []
