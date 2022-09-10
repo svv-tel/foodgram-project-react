@@ -191,19 +191,19 @@ class FavoriteViewSet(CreateDestroyMixin):
             serializer = FavoritRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return Response(
-            f'Вы уже добавили {recipe.name} в избранное',
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response(f'Вы уже добавили {recipe.name} в избранное',
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
+        if not Favorite.objects.filter(user=user, recipe=recipe):
+            return Response(f'Рецепт {recipe.name} не добавлен в избранное',
+                            status=status.HTTP_400_BAD_REQUEST)
         Favorite.objects.filter(user=user, recipe=recipe).delete()
         return Response(
-            f'Рецепт {recipe.name} удалён из избранного',
-            status=status.HTTP_204_NO_CONTENT
-        )
+            f'Рецепт {recipe.name} успешно удалён из избранного',
+            status=status.HTTP_204_NO_CONTENT)
 
 
 class CartViewSet(ListCreateDestroyMixin):
