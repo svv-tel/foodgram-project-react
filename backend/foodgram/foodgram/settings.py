@@ -75,7 +75,7 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -125,6 +125,18 @@ DJOSER = {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
     },
     'PERMISSIONS': {
-        "user": ["djoser.permissions.AllowAny"],
+        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
     }
 }
+
+'HIDE_USERS': False,
+'LOGIN_FIELD': 'email',
+'SERIALIZERS': {
+    'user': 'api.serializers.CustomUserSerializer',
+    'user_create': 'api.serializers.CustomUserCreateSerializer',
+    'current_user': 'api.serializers.CustomUserSerializer',
+},
+'PERMISSIONS': {
+    'user_list': ('rest_framework.permissions.AllowAny',),
+    'user': ('rest_framework.permissions.AllowAny',),
+},
