@@ -180,8 +180,7 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 
 
 class FavoriteViewSet(CreateDestroyMixin):
-    def favorite(self, request, pk=None):
-        return self.get_queryset(request=request, list_model=Favorite, pk=pk)
+    lookup_field = 'id'
 
     def create(self, request, pk):
         user = request.user
