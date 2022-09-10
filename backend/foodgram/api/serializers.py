@@ -33,9 +33,10 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredient(serializers.ModelSerializer):
+
     class Meta:
         model = IngredientRecipeAmount
-        fields = ('id', 'amount',)
+        fields = ('id', 'recipe', 'amount',)
         read_only_fields = ('measurement_units', 'name',)
         lookup_field = 'id'
 
@@ -62,7 +63,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
-    image = Base64ImageField(max_length=None, use_url=False)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
@@ -95,18 +96,16 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         source='ingredient_amount'
     )
     author = CustomUserSerializer(read_only=True)
-    image = Base64ImageField(max_length=None, use_url=False)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
         fields = (
-            'id', 'author',
+            'tags', 'ingredients',
             'name', 'image',
-            'text', 'ingredients',
-            'tags', 'cooking_time',
-            'author'
+            'text', 'cooking_time',
+            'author',
         )
-        read_only_fields = ('author',)
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
         ingredient_recipe_objs = []
@@ -127,6 +126,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         tags = validated_data.pop('tags')
         validated_data.pop('ingredient_amount')
         ingredients_validator(ingredients)
+
         recipe = Recipe.objects.create(
             author=self.context['request'].user, **validated_data
         )
@@ -154,12 +154,16 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
 
 
 class FavoriteSerializer(serializers.ModelField):
+    """Сериализатор для избранного"""
+
     class Meta:
         model = Favorite
         fields = ('id', 'user', 'recipe')
 
 
 class FavoritRecipeSerializer(RecipeSerializer):
+    """Сериализатор рецептов для ответа при создании записи в избранном"""
+
     class Meta:
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
