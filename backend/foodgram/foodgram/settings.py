@@ -125,6 +125,6 @@ DJOSER = {
         'user_create': 'users.serializers.CustomUserCreateSerializer',
     },
     'PERMISSIONS': {
-        "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+        "user": ["djoser.permissions.AllowAny"],
     }
 }
