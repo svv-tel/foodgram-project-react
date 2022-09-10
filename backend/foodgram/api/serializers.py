@@ -104,6 +104,7 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'tags', 'ingredients',
             'name', 'image',
             'text', 'cooking_time',
+            'author',
         )
 
     def generate_recipe_ingr(self, ingredients_data, recipe):
