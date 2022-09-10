@@ -79,7 +79,6 @@ class Recipe(models.Model):
         through='IngredientRecipeAmount',
         verbose_name='Ингредиент',
     )
-    ordering = ['id']
 
     def __str__(self):
         return self.name
