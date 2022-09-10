@@ -128,15 +128,3 @@ DJOSER = {
         "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
     }
 }
-
-'HIDE_USERS': False,
-'LOGIN_FIELD': 'email',
-'SERIALIZERS': {
-    'user': 'api.serializers.CustomUserSerializer',
-    'user_create': 'api.serializers.CustomUserCreateSerializer',
-    'current_user': 'api.serializers.CustomUserSerializer',
-},
-'PERMISSIONS': {
-    'user_list': ('rest_framework.permissions.AllowAny',),
-    'user': ('rest_framework.permissions.AllowAny',),
-},
