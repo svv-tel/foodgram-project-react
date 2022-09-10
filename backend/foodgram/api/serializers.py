@@ -66,10 +66,9 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = (
-            'ingredients', 'tags', 'image', 'name',
-            'text', 'cooking_time', 'author',
-        )
+        fields = ('id','ingredients', 'tags', 'image', 'name',
+                  'text', 'cooking_time', 'author')
+
 
     def get_is_favorited(self, obj):
         user = self.context['request'].user
