@@ -87,6 +87,17 @@ class RecipeSerializer(serializers.ModelSerializer):
         return False
 
 
+class IngredientItemSerializer(serializers.ModelSerializer):
+    name = serializers.ReadOnlyField(source="ingredient.name")
+    measurement_unit = serializers.ReadOnlyField(
+        source="ingredient.measurement_unit"
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ["id", "name", "amount", "measurement_unit"]
+
+
 class CreateRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True,
@@ -104,22 +115,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'tags', 'ingredients',
             'name', 'image',
             'text', 'cooking_time',
-            'author',
+            'author', 'id'
         )
 
-    def generate_recipe_ingr(self, ingredients_data, recipe):
-        ingredient_recipe_objs = []
-        for ingredient in ingredients_data:
-            ingredient_recipe_objs.append(
-                IngredientRecipeAmount(
-                    recipe=recipe,
-                    ingredient=Ingredient.objects.get(pk=ingredient['id']),
-                    amount=ingredient['amount']
-                )
-            )
-        return IngredientRecipeAmount.objects.bulk_create(
-            ingredient_recipe_objs
-        )
+    def generate_recipe_ingr(self, obj):
+        qset = Ingredient.objects.filter(recipe=obj)
+        return IngredientItemSerializer(qset, many=True).data
 
     def create(self, validated_data):
         ingredients = self.context['request'].data['ingredients']
