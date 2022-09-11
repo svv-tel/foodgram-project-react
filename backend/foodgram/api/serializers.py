@@ -107,12 +107,11 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
             'author',
         )
 
-    def generate_recipe_ingr(self, ingredients_data, recipe):
+    def generate_recipe_ingr(self, ingredients_data):
         ingredient_recipe_objs = []
         for ingredient in ingredients_data:
             ingredient_recipe_objs.append(
                 IngredientRecipeAmount(
-                    recipe=recipe,
                     ingredient=Ingredient.objects.get(pk=ingredient['id']),
                     amount=ingredient['amount']
                 )
@@ -127,12 +126,12 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         validated_data.pop('ingredient_amount')
         ingredients_validator(ingredients)
 
-        recipe2 = Recipe.objects.create(
+        recipe = Recipe.objects.create(
             author=self.context['request'].user, **validated_data
         )
-        self.generate_recipe_ingr(ingredients, recipe2)
-        recipe2.tags.set(tags)
-        return recipe2
+        self.generate_recipe_ingr(ingredients, recipe)
+        recipe.tags.set(tags)
+        return recipe
 
     def update(self, instance, validated_data):
         request = self.context['request']
