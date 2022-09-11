@@ -130,7 +130,6 @@ class CreateRecipeSerializer(serializers.ModelSerializer):
         self.create_ingredients(recipe=recipe, ingredients=ingredients_data)
         return recipe
 
-
     def update(self, instance, validated_data):
         request = self.context['request']
         ingredients = request.data['ingredients']
