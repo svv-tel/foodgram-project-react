@@ -181,6 +181,7 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 
 class FavoriteViewSet(CreateDestroyMixin):
     lookup_field = 'id'
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
     def create(self, request, pk):
         user = request.user
