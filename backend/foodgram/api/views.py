@@ -53,7 +53,7 @@ class RecipeViewSet(AllMethodsMixin):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = Recipe.objects.all()
+        queryset = Recipe.objects.all().order_by('id')
         is_in_shopping_cart = self.request.query_params.get(
             'is_in_shopping_cart'
         )
@@ -182,12 +182,12 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 class FavoriteViewSet(CreateDestroyMixin):
     permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
-    def create(self, request, recipe_id):
-        user = self.request.user
-        recipe = get_object_or_404(Recipe, id=recipe_id)
+    def create(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
         if not Favorite.objects.filter(user=user, recipe=recipe):
             Favorite.objects.create(user=user, recipe=recipe)
-            queryset = get_object_or_404(Recipe, id=recipe_id)
+            queryset = get_object_or_404(Recipe, pk=pk)
             serializer = FavoritRecipeSerializer(queryset)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
