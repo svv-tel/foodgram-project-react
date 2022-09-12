@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.pagination import PageNumberPagination
@@ -185,7 +184,7 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 class FavoriteViewSet(viewsets.ViewSet):
     """ Избранные рецепты."""
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
     def create(self, request, recipe_id):
         recipe = get_object_or_404(Recipe, id=recipe_id)
