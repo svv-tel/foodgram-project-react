@@ -33,7 +33,6 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeIngredient(serializers.ModelSerializer):
-
     class Meta:
         model = IngredientRecipeAmount
         fields = ('id', 'amount',)

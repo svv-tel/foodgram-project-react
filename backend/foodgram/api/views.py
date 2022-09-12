@@ -24,6 +24,7 @@ from .mixins import (
     ListCreateDestroyMixin, ListRetreiveMixin,
 )
 from .permissions import IsAuthorOrAdminOrReadOnly
+from .serializers import FavoritRecipeSerializer
 from .utils import generate_shopping_list
 
 User = get_user_model()
@@ -56,16 +57,22 @@ class RecipeViewSet(AllMethodsMixin):
 
     def get_queryset(self):
         queryset = Recipe.objects.all()
+        is_in_shopping_cart = self.request.query_params.get(
+            'is_in_shopping_cart'
+        )
         is_favorited = self.request.query_params.get('is_favorited')
-        is_in_shopping_cart = (
-            self.request.query_params.get('is_in_shopping_cart'))
-        if is_favorited == '1':
-            queryset = Recipe.objects.filter(
-                favorite_recipe__user=self.request.user)
-        if is_in_shopping_cart == '1':
-            queryset = Recipe.objects.filter(
-                shopping_cart__user=self.request.user)
-        return queryset
+        cart = ShoppingCart.objects.filter(user=self.request.user.id)
+        favorite = Favorite.objects.filter(user=self.request.user)
+
+        if is_in_shopping_cart == 'true':
+            queryset = queryset.filter(cart__in=cart)
+        elif is_in_shopping_cart == 'false':
+            queryset = queryset.exclude(cart__in=cart)
+        if is_favorited == 'true':
+            queryset = queryset.filter(favorite__in=favorite)
+        elif is_favorited == 'false':
+            queryset = queryset.exclude(favorite__in=favorite)
+        return queryset.all()
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(
@@ -175,33 +182,32 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
         )
 
 
-class FavoriteViewSet(viewsets.ViewSet):
-    """ Избранные рецепты."""
-
+class FavoriteViewSet(CreateDestroyMixin):
+    lookup_field = 'id'
     permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
-    def create(self, request, recipe_id):
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        if Favorite.objects.filter(
-                recipe=recipe, user=self.request.user).exists():
-            raise ValidationError(
-                {"errors": "Рецeпт уже в избранных"}
-            )
-        Favorite.objects.create(recipe=recipe, user=self.request.user)
-        serializer = RecipeSerializer(recipe)
-        return Response(serializer.data)
+    def create(self, request, pk=None):
+        user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+        if not Favorite.objects.filter(user=user, recipe=recipe):
+            Favorite.objects.create(user=user, recipe=recipe)
+            queryset = get_object_or_404(Recipe, pk=pk)
+            serializer = FavoritRecipeSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete(self, request, recipe_id):
-        recipe = get_object_or_404(Recipe, id=recipe_id)
-        user = self.request.user
-        try:
-            favorite = Favorite.objects.get(recipe=recipe, user=user)
-        except ObjectDoesNotExist:
-            raise ValidationError(
-                {"errors": "velit"}
-            )
-        favorite.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
+            f'Вы уже добавили {recipe.name} в избранное',
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def delete(self, request, pk):
+        user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+        Favorite.objects.filter(user=user, recipe=recipe).delete()
+        return Response(
+            f'Рецепт {recipe.name} удалён из избранного',
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class CartViewSet(ListCreateDestroyMixin):
