@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.pagination import PageNumberPagination
@@ -180,31 +182,30 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 
 
 class FavoriteViewSet(CreateDestroyMixin):
-    lookup_field = 'id'
     permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
-    def create(self, request, pk=None):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        if not Favorite.objects.filter(user=user, recipe=recipe):
-            Favorite.objects.create(user=user, recipe=recipe)
-            queryset = get_object_or_404(Recipe, pk=pk)
-            serializer = FavoritRecipeSerializer(queryset)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def create(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        if Favorite.objects.filter(
+                recipe=recipe, user=self.request.user).exists():
+            raise ValidationError(
+                {"errors": "Рецeпт уже в избранных"}
+            )
+        Favorite.objects.create(recipe=recipe, user=self.request.user)
+        serializer = IngredientSerializer(recipe)
+        return Response(serializer.data)
 
-        return Response(
-            f'Вы уже добавили {recipe.name} в избранное',
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    def delete(self, request, pk):
-        user = request.user
-        recipe = get_object_or_404(Recipe, pk=pk)
-        Favorite.objects.filter(user=user, recipe=recipe).delete()
-        return Response(
-            f'Рецепт {recipe.name} удалён из избранного',
-            status=status.HTTP_204_NO_CONTENT
-        )
+    def delete(self, request, recipe_id):
+        recipe = get_object_or_404(Recipe, id=recipe_id)
+        user = self.request.user
+        try:
+            favorite = Favorite.objects.get(recipe=recipe, user=user)
+        except ObjectDoesNotExist:
+            raise ValidationError(
+                {"errors": "velit"}
+            )
+        favorite.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CartViewSet(ListCreateDestroyMixin):
