@@ -55,23 +55,17 @@ class RecipeViewSet(AllMethodsMixin):
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
-        queryset = Recipe.objects.all().order_by('id')
-        is_in_shopping_cart = self.request.query_params.get(
-            'is_in_shopping_cart'
-        )
+        queryset = Recipe.objects.all()
         is_favorited = self.request.query_params.get('is_favorited')
-        cart = ShoppingCart.objects.filter(user=self.request.user.id)
-        favorite = Favorite.objects.filter(user=self.request.user.id)
-
-        if is_in_shopping_cart == 'true':
-            queryset = queryset.filter(cart__in=cart)
-        elif is_in_shopping_cart == 'false':
-            queryset = queryset.exclude(cart__in=cart)
-        if is_favorited == 'true':
-            queryset = queryset.filter(favorite__in=favorite)
-        elif is_favorited == 'false':
-            queryset = queryset.exclude(favorite__in=favorite)
-        return queryset.all().order_by('-id')
+        is_in_shopping_cart = (
+            self.request.query_params.get('is_in_shopping_cart'))
+        if is_favorited == '1':
+            queryset = Recipe.objects.filter(
+                starred__user=self.request.user)
+        if is_in_shopping_cart == '1':
+            queryset = Recipe.objects.filter(
+                shopping_cart__user=self.request.user)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         serializer = CreateRecipeSerializer(

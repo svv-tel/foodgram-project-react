@@ -154,9 +154,6 @@ class Favorite(models.Model):
                 name='unique_favourite'
             )
         ]
-        ordering = ('id',)
-        verbose_name = 'Избранное'
-        verbose_name_plural = 'Избранные'
 
 
 class IngredientRecipeAmount(models.Model):
