@@ -61,7 +61,7 @@ class RecipeViewSet(AllMethodsMixin):
             self.request.query_params.get('is_in_shopping_cart'))
         if is_favorited == '1':
             queryset = Recipe.objects.filter(
-                starred__user=self.request.user)
+                favorite_recipe__user=self.request.user)
         if is_in_shopping_cart == '1':
             queryset = Recipe.objects.filter(
                 shopping_cart__user=self.request.user)
