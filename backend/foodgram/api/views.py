@@ -6,7 +6,6 @@ from rest_framework import filters, mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
@@ -182,7 +181,7 @@ class FollowCreateDestroyViewSet(CreateDestroyMixin):
 
 class FavoriteViewSet(CreateDestroyMixin):
     lookup_field = 'id'
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
     def create(self, request, pk):
         user = request.user
