@@ -183,7 +183,7 @@ class FavoriteViewSet(CreateDestroyMixin):
     lookup_field = 'id'
     permission_classes = (IsAuthorOrAdminOrReadOnly,)
 
-    def create(self, request, pk):
+    def create(self, request, pk=None):
         user = request.user
         recipe = get_object_or_404(Recipe, pk=pk)
         if not Favorite.objects.filter(user=user, recipe=recipe):
