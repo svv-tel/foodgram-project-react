@@ -11,7 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from api.serializers import (
     CreateRecipeSerializer, FollowUserCreateSerializer,
-    FavoritRecipeSerializer, FollowUserSerializer,
+    FollowUserSerializer,
     IngredientSerializer, RecipeSerializer,
     ShoppingCartRecipeSerializer, TagSerializer
 )
