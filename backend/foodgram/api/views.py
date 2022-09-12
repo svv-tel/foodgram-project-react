@@ -22,6 +22,7 @@ from .mixins import (
     AllMethodsMixin, CreateDestroyMixin,
     ListCreateDestroyMixin, ListRetreiveMixin,
 )
+from .permissions import IsAuthorOrAdminOrReadOnly
 from .utils import generate_shopping_list
 
 User = get_user_model()
@@ -49,7 +50,7 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthorOrAdminOrReadOnly,)
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
