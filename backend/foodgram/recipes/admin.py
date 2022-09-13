@@ -31,9 +31,9 @@ class IngredientInline(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'starred_count',)
+    list_display = ('name', 'author', 'tag', 'starred_count',)
     search_fields = ('name', 'author', 'tags')
-    list_filter = ('name',)
+    list_filter = ('name', 'author', 'tag',)
     empty_value_display = '-пусто-'
     inlines = (IngredientInline,)
 
