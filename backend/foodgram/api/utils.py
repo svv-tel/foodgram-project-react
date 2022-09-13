@@ -26,5 +26,5 @@ def generate_shopping_list(user):
     for ingredient in ingredient_list:
         amount = ingredient_list[ingredient]['Количество']
         unit = ingredient_list[ingredient]['Единицы']
-        text += f'{text} {ingredient} {amount} {unit} \n'
+        text += f'{ingredient} {amount} {unit} \n'
     return text
