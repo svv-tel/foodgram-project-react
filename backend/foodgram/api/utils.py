@@ -3,7 +3,7 @@ from recipes.models import IngredientRecipeAmount, ShoppingCart
 
 def generate_shopping_list(user):
     ingredient_list = {}
-    text = 'Ваш список покупок: \n\n'
+    text_start = f'Ваш список покупок: \n\n'
     recipes_in_shopping_cart = ShoppingCart.objects.filter(user=user)
     for recipe in recipes_in_shopping_cart:
         ingredient_recipe = IngredientRecipeAmount.objects.filter(
@@ -26,5 +26,5 @@ def generate_shopping_list(user):
     for ingredient in ingredient_list:
         amount = ingredient_list[ingredient]['Количество']
         unit = ingredient_list[ingredient]['Единицы']
-        text += ingredient + ' ' + str(amount) + ' ' + unit + '\n'
-    return text
+        text_finish = f'{text_start} {ingredient} {amount} {unit} \n'
+    return text_finish
