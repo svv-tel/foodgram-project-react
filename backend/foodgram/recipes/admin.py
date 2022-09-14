@@ -19,9 +19,8 @@ class IngredientAdmin(admin.ModelAdmin):
         'name', 'measurement_unit',
     )
     search_fields = ('name',)
-    list_filter = ('name',)
     empty_value_display = '-пусто-'
-    list_per_page = 5
+    list_per_page = 50
 
 
 class IngredientInline(admin.TabularInline):
@@ -63,8 +62,9 @@ class IngredientRecipeAmountAdmin(admin.ModelAdmin):
         'id', 'recipe', 'amount'
     )
     search_fields = ('recipe',)
+    list_filter = ('recipe',)
     empty_value_display = '-пусто-'
-    list_per_page = 50
+    list_per_page = 5
 
 
 admin.site.register(Recipe, RecipeAdmin)
