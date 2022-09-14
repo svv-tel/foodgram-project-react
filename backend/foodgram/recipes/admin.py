@@ -30,7 +30,7 @@ class IngredientInline(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'tag', 'starred_count',)
+    list_display = ('name', 'author', 'tags', 'starred_count',)
     search_fields = ('name', 'author', 'tags')
     list_filter = ('name', 'author', 'tags',)
     empty_value_display = '-пусто-'
@@ -62,9 +62,8 @@ class IngredientRecipeAmountAdmin(admin.ModelAdmin):
         'id', 'recipe', 'amount'
     )
     search_fields = ('recipe',)
-    list_filter = ('recipe',)
     empty_value_display = '-пусто-'
-    list_per_page = 5
+    list_per_page = 50
 
 
 admin.site.register(Recipe, RecipeAdmin)
