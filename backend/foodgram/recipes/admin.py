@@ -63,9 +63,8 @@ class IngredientRecipeAmountAdmin(admin.ModelAdmin):
         'id', 'recipe', 'amount'
     )
     search_fields = ('recipe',)
-    list_filter = ('recipe',)
     empty_value_display = '-пусто-'
-    list_per_page = 5
+    list_per_page = 50
 
 
 admin.site.register(Recipe, RecipeAdmin)
