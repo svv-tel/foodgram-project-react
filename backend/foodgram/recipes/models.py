@@ -6,18 +6,40 @@ from colorfield.fields import ColorField
 
 User = get_user_model()
 
+CHOICES_COLOR = (
+    ('red', 'red'),
+    ('green', 'green'),
+    ('blue', 'blue')
+)
+CHOICES_NAME = (
+    ('Завтрак', 'Завтрак'),
+    ('Обед', 'Обед'),
+    ('Ужин', 'Ужин')
+)
+CHOICES_SLUG = (
+    ('breakfast', 'breakfast'),
+    ('lunch', 'lunch'),
+    ('dinner', 'dinner')
+)
+
 
 class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         verbose_name='Имя тега',
-        help_text='Название тега'
+        help_text='Название тега',
+        choices=CHOICES_NAME
     )
-    color = ColorField(default='#FF0000')
+    color = models.CharField(
+        max_length=20,
+        verbose_name='Цвет тега',
+        help_text='Цвет тега',
+        choices=CHOICES_COLOR
+    )
     slug = models.SlugField(
         max_length=200,
-        unique=True,
-        verbose_name='Slug'
+        verbose_name='Slug',
+        choices=CHOICES_SLUG
     )
 
     class Meta:
