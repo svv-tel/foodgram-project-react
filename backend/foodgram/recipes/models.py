@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
+from colorfield.fields import ColorField
 
 User = get_user_model()
 
@@ -12,12 +13,7 @@ class Tag(models.Model):
         verbose_name='Имя тега',
         help_text='Название тега'
     )
-    color = models.CharField(
-        max_length=20,
-        verbose_name='Цвет тега',
-        help_text='Цвет тега',
-        unique=True
-    )
+    color = ColorField(default='#FF0000')
     slug = models.SlugField(
         max_length=200,
         unique=True,
