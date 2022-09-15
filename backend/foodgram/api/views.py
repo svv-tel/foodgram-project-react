@@ -31,6 +31,9 @@ User = get_user_model()
 class TagsViewSet(ListRetreiveMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+    lookup_field = 'id'
     pagination_class = None
 
 
