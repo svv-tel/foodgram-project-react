@@ -13,7 +13,12 @@ class Tag(models.Model):
         verbose_name='Имя тега',
         help_text='Название тега'
     )
-    color = ColorField(default='#FF0000')
+    color = models.CharField(
+        max_length=20,
+        verbose_name='Цвет тега',
+        help_text='Цвет тега',
+        unique=True
+    )
     slug = models.SlugField(
         max_length=200,
         unique=True,
