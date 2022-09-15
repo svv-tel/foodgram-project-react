@@ -1,9 +1,6 @@
-from django.contrib.auth import get_user_model
 import django_filters as filters
 
 from recipes.models import Ingredient, Recipe
-
-User = get_user_model()
 
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -12,7 +9,6 @@ class CharInFilter(filters.BaseInFilter, filters.CharFilter):
 
 class RecipeFilter(filters.FilterSet):
     tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug')
-    author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.NumberFilter(method='get_is_favorited')
     is_in_shopping_cart = filters.NumberFilter(
         method='get_is_in_shopping_cart'
