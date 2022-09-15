@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 import django_filters as filters
 
 from recipes.models import Ingredient, Recipe
