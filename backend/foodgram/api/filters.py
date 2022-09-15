@@ -8,7 +8,7 @@ class CharInFilter(filters.BaseInFilter, filters.CharFilter):
 
 
 class RecipeFilter(filters.FilterSet):
-    tags = filters.ModelMultipleChoiceFilter(field_name='tags__slug')
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     is_favorited = filters.NumberFilter(method='get_is_favorited')
     is_in_shopping_cart = filters.NumberFilter(
         method='get_is_in_shopping_cart'
