@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 from rest_framework.pagination import PageNumberPagination
@@ -31,9 +32,7 @@ User = get_user_model()
 class TagsViewSet(ListRetreiveMixin):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    lookup_field = 'id'
+    permission_classes = (AllowAny,)
     pagination_class = None
 
 

@@ -15,14 +15,12 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id', 'name', 'slug', 'color')
-        lookup_field = 'slug'
 
 
 class CreatTagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('id')
-        lookup_field = 'slug'
 
 
 class IngredientSerializer(serializers.ModelSerializer):
