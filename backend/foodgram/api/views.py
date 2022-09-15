@@ -24,7 +24,6 @@ from .mixins import (
 from .permissions import IsAuthorOrAdminOrReadOnly
 from .serializers import FavoritRecipeSerializer
 from .utils import generate_shopping_list
-from ..users.permissions import ReadOnly
 
 User = get_user_model()
 
@@ -51,7 +50,7 @@ class RecipeViewSet(AllMethodsMixin):
     serializer_class = RecipeSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = RecipeFilter
-    permission_classes = (ReadOnly,)
+    permission_classes = (IsAuthorOrAdminOrReadOnly,)
     pagination_class = PageNumberPagination
 
     def get_queryset(self):
