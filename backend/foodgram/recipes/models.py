@@ -28,6 +28,8 @@ class Tag(models.Model):
         return self.name
 
 
+
+
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,
@@ -85,6 +87,10 @@ class Recipe(models.Model):
         verbose_name='Ингредиент',
     )
 
+    class Meta:
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
+
     def __str__(self):
         return self.name
 
@@ -107,6 +113,8 @@ class Follow(models.Model):
         constraints = [
             UniqueConstraint(fields=['user', 'author'], name='unique_follow')
         ]
+        verbose_name = 'Подписчик'
+        verbose_name_plural = 'Подписчики'
 
 
 class ShoppingCart(models.Model):
@@ -114,7 +122,7 @@ class ShoppingCart(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='shopping_cart',
-        verbose_name='Пользователь',
+        verbose_name='Список покупок',
     )
 
     recipe = models.ForeignKey(
@@ -131,6 +139,8 @@ class ShoppingCart(models.Model):
                 name='unique_shoppingcart'
             )
         ]
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
 
 
 class Favorite(models.Model):
@@ -138,7 +148,7 @@ class Favorite(models.Model):
         User,
         on_delete=models.CASCADE,
         related_name='starred',
-        verbose_name='Пользователь',
+        verbose_name='Избранное',
     )
     recipe = models.ForeignKey(
         Recipe,
@@ -154,6 +164,8 @@ class Favorite(models.Model):
                 name='unique_favourite'
             )
         ]
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
 
 
 class IngredientRecipeAmount(models.Model):
@@ -180,3 +192,5 @@ class IngredientRecipeAmount(models.Model):
                 name='unique_ingredient_recipe'
             )
         ]
+        verbose_name = 'Ингредиент для рецептов'
+        verbose_name_plural = 'Ингредиенты для рецептов'
