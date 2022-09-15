@@ -2,6 +2,8 @@ import django_filters as filters
 
 from recipes.models import Ingredient, Recipe
 
+User = get_user_model()
+
 
 class CharInFilter(filters.BaseInFilter, filters.CharFilter):
     pass
