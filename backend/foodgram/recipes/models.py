@@ -18,7 +18,7 @@ class Tag(models.Model):
         help_text='Название тега',
         unique=True,
     )
-    color = ColorField(samples=COLOR_PALETTE)
+    color = ColorField(choices=COLOR_PALETTE)
     slug = models.SlugField(
         max_length=200,
         verbose_name='Slug',
@@ -74,9 +74,7 @@ class Recipe(models.Model):
         verbose_name='Изображение',
         max_length=2048
     )
-    tags = models.ManyToManyField(
-        Tag,
-        verbose_name='Тег',
+    м
     )
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)]
