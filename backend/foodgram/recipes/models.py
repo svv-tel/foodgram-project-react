@@ -2,24 +2,9 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
+from colorfield.fields import ColorField
 
 User = get_user_model()
-
-CHOICES_COLOR = (
-    ('red', 'red'),
-    ('green', 'green'),
-    ('blue', 'blue')
-)
-CHOICES_NAME = (
-    ('Завтрак', 'Завтрак'),
-    ('Обед', 'Обед'),
-    ('Ужин', 'Ужин')
-)
-CHOICES_SLUG = (
-    ('breakfast', 'breakfast'),
-    ('lunch', 'lunch'),
-    ('dinner', 'dinner')
-)
 
 
 class Tag(models.Model):
@@ -27,18 +12,11 @@ class Tag(models.Model):
         max_length=200,
         verbose_name='Имя тега',
         help_text='Название тега',
-        choices=CHOICES_NAME
     )
-    color = models.CharField(
-        max_length=20,
-        verbose_name='Цвет тега',
-        help_text='Цвет тега',
-        choices=CHOICES_COLOR
-    )
+    color = ColorField(default='#FF0000')
     slug = models.SlugField(
         max_length=200,
         verbose_name='Slug',
-        choices=CHOICES_SLUG
     )
 
     class Meta:
