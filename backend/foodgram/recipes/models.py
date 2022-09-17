@@ -17,7 +17,7 @@ class Tag(models.Model):
         verbose_name='Имя тега',
         help_text='Название тега',
     )
-    color = ColorField(choices=COLOR_PALETTE)
+    color = ColorField(samples=COLOR_PALETTE)
     slug = models.SlugField(
         max_length=200,
         verbose_name='Slug',
