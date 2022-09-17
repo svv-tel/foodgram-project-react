@@ -29,16 +29,23 @@ class IngredientInline(admin.TabularInline):
     min_num = 1
 
 
+@admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'tags__name', 'starred_count',)
-    search_fields = ('name', 'author', 'tags')
-    list_filter = ('name', 'author', 'tags',)
-    empty_value_display = '-пусто-'
     inlines = (IngredientInline,)
+    search_fields = (
+        "name",
+        "author__first_name",
+        "author__last_name",
+        "author__username",
+        "author__email",
+        "tags__name",
+    )
+    list_display = ("__str__", "get_favorites")
+    list_filter = ("tags__name",)
 
-    def starred_count(self, obj):
-        result = Favorite.objects.filter(recipe=obj).count()
-        return result
+    @admin.display(description="Добавили в избранное")
+    def get_favorites(self, recipe):
+        return recipe.favorite_recipe.count()
 
 
 class FavoriteAdmin(admin.ModelAdmin):
