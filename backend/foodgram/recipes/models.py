@@ -74,8 +74,6 @@ class Recipe(models.Model):
         verbose_name='Изображение',
         max_length=2048
     )
-    м
-    )
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)]
     )
