@@ -30,7 +30,7 @@ class IngredientInline(admin.TabularInline):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'author', 'tags__name', 'starred_count',)
+    list_display = ('name', 'author', 'tags', 'starred_count',)
     search_fields = ('name', 'author', 'tags__name')
     list_filter = ('name', 'author', 'tags__name',)
     empty_value_display = '-пусто-'
