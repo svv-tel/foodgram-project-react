@@ -8,12 +8,17 @@ User = get_user_model()
 
 
 class Tag(models.Model):
+    COLOR_PALETTE = [
+        ("#FFFFFF", "white", ),
+        ("#000000", "black", ),
+    ]
     name = models.CharField(
         max_length=200,
         verbose_name='Имя тега',
         help_text='Название тега',
+        unique=True,
     )
-    color = ColorField(default='#FF0000')
+    color = ColorField(samples=COLOR_PALETTE)
     slug = models.SlugField(
         max_length=200,
         verbose_name='Slug',
