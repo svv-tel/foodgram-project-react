@@ -74,6 +74,10 @@ class Recipe(models.Model):
         verbose_name='Изображение',
         max_length=2048
     )
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Тег',
+    )
     cooking_time = models.PositiveIntegerField(
         validators=[MinValueValidator(1)]
     )
